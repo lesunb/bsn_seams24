@@ -61,7 +61,7 @@ std::vector<std::string> G4T1::getPatientStatus() {
 void G4T1::setUp() {
     Component::setUp();
 
-    ros::NodeHandle config;
+    rclcpp::Node config;
 
     double freq;
     config.getParam("frequency", freq);
@@ -150,16 +150,16 @@ void G4T1::process(){
         patient_risk = "VERY CRITICAL RISK";
     }
 
-    ROS_INFO("*****************************************");
-    ROS_INFO("PatientStatusInfo#");
-    ROS_INFO("| THERM_RISK: %s", std::to_string(trm_risk).c_str());
-    ROS_INFO("| ECG_RISK: %s", std::to_string(ecg_risk).c_str());
-    ROS_INFO("| OXIM_RISK: %s", std::to_string(oxi_risk).c_str());
-    ROS_INFO("| ABPS_RISK: %s", std::to_string(abps_risk).c_str());
-    ROS_INFO("| ABPD_RISK: %s", std::to_string(abpd_risk).c_str());
-    ROS_INFO("| GLC_RISK: %s", std::to_string(glc_risk).c_str());
-    ROS_INFO("| PATIENT_STATE: %s", patient_risk.c_str());
-    ROS_INFO("*****************************************");
+    RCLCPP_INFO(rclcpp::get_logger("Component"), "*****************************************");
+    RCLCPP_INFO(rclcpp::get_logger("Component"), "PatientStatusInfo#");
+    RCLCPP_INFO(rclcpp::get_logger("Component"), "| THERM_RISK: %s", std::to_string(trm_risk).c_str());
+    RCLCPP_INFO(rclcpp::get_logger("Component"), "| ECG_RISK: %s", std::to_string(ecg_risk).c_str());
+    RCLCPP_INFO(rclcpp::get_logger("Component"), "| OXIM_RISK: %s", std::to_string(oxi_risk).c_str());
+    RCLCPP_INFO(rclcpp::get_logger("Component"), "| ABPS_RISK: %s", std::to_string(abps_risk).c_str());
+    RCLCPP_INFO(rclcpp::get_logger("Component"), "| ABPD_RISK: %s", std::to_string(abpd_risk).c_str());
+    RCLCPP_INFO(rclcpp::get_logger("Component"), "| GLC_RISK: %s", std::to_string(glc_risk).c_str());
+    RCLCPP_INFO(rclcpp::get_logger("Component"), "| PATIENT_STATE: %s", patient_risk.c_str());
+    RCLCPP_INFO(rclcpp::get_logger("Component"), "*****************************************");
 }
 
 int32_t G4T1::getSensorId(std::string type) {
@@ -176,7 +176,7 @@ int32_t G4T1::getSensorId(std::string type) {
     else if (type == "glucosemeter")        
         return 5;
     else {
-        ROS_WARN("UNKNOWN TYPE: %s", type.c_str());
+        RCLCPP_WARN(rclcpp::get_logger("Component"), "UNKNOWN TYPE: %s", type.c_str());
         return -1;
     }
 }

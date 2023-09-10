@@ -1,7 +1,7 @@
 #ifndef PROBE_HPP
 #define PROBE_HPP
 
-#include "ros/ros.h"
+#include "rclcpp/rclcpp.hpp"
 
 #include "archlib/Event.h"
 #include "archlib/Status.h"
@@ -31,7 +31,7 @@ namespace arch {
                 void collectEnergyStatus(const archlib::EnergyStatus::ConstPtr& /*msg*/);
 
             protected:
-                ros::NodeHandle handle;
+                rclcpp::Node handle;
 
             private:
                 ros::Subscriber collect_event;

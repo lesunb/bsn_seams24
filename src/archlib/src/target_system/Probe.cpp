@@ -20,12 +20,12 @@ namespace arch {
         }
 
         void Probe::collectEvent(const archlib::Event::ConstPtr& msg) {
-            //ROS_DEBUG("I heard: [%s: %s]", msg->source.c_str(), msg->content.c_str());
+            //RCLCPP_DEBUG(rclcpp::get_logger("Archlib"), "I heard: [%s: %s]", msg->source.c_str(), msg->content.c_str());
             log_event.publish(msg);
         }
 
         void Probe::collectStatus(const archlib::Status::ConstPtr& msg) {
-            //ROS_DEBUG("I heard: [%s: %s]", msg->source.c_str(), msg->content.c_str());
+            //RCLCPP_DEBUG(rclcpp::get_logger("Archlib"), "I heard: [%s: %s]", msg->source.c_str(), msg->content.c_str());
             log_status.publish(msg);
         }
 
@@ -34,11 +34,11 @@ namespace arch {
         }
 
         void Probe::body(){
-            ros::NodeHandle n;
-            ros::Subscriber collect_event = n.subscribe("collect_event", 1000, &Probe::collectEvent, this);
-            ros::Subscriber collect_status = n.subscribe("collect_status", 1000, &Probe::collectStatus, this);
-            ros::Subscriber collect_energy_status = n.subscribe("collect_energy_status", 100, &Probe::collectEnergyStatus, this);
-            ros::spin();
+            rclcpp::Node n;
+            auto collect_event = n.subscribe("collect_event", 1000, &Probe::collectEvent, this);
+            auto collect_status = n.subscribe("collect_status", 1000, &Probe::collectStatus, this);
+            auto collect_energy_status = n.subscribe("collect_energy_status", 100, &Probe::collectEnergyStatus, this);
+            rclcpp::spin(node);
         }
 	}
 }

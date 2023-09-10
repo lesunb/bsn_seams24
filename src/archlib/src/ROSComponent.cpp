@@ -11,9 +11,9 @@ namespace arch {
     int32_t ROSComponent::run() {
         setUp();
 
-        while(ros::ok()) {
-            ros::Rate loop_rate(rosComponentDescriptor.getFreq());
-            ros::spinOnce();
+        while(rclcpp::ok()) {
+            rclcpp::Rate loop_rate(rosComponentDescriptor.getFreq());
+            rclcpp::spin_some(node);
             body();
             loop_rate.sleep();
         }
@@ -25,7 +25,7 @@ namespace arch {
     std::string ROSComponent::getRosNodeName(const std::string& node_name, const std::string& node_namespace) {
         std::string ros_node_name = node_name;
 
-        ROS_DEBUG("%s", ros_node_name.c_str());
+        RCLCPP_DEBUG(rclcpp::get_logger("Archlib"), "%s", ros_node_name.c_str());
         size_t pos = ros_node_name.find(node_namespace + '/');
 
         if (pos == std::string::npos)
@@ -35,7 +35,7 @@ namespace arch {
             return ros_node_name;
         }
 
-        // ROS_INFO("namespace %s", node_namespace.c_str());
+        // RCLCPP_INFO(rclcpp::get_logger("Archlib"), "namespace %s", node_namespace.c_str());
         ros_node_name.replace(pos, node_namespace.length() + 1, "/");
 
         return ros_node_name;

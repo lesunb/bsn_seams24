@@ -4,7 +4,7 @@
 #include <string>
 #include <exception>
 
-#include "ros/ros.h"
+#include "rclcpp/rclcpp.hpp"
 
 #include "libbsn/generator/DataGenerator.hpp"
 #include "libbsn/range/Range.hpp"
@@ -45,7 +45,7 @@ class G3T1_2 : public Sensor {
 		bsn::filters::MovingAverage filter;
 		bsn::configuration::SensorConfiguration sensorConfig;
 
-		ros::NodeHandle handle;
+		rclcpp::Node handle;
 		ros::Publisher data_pub;
 		ros::ServiceClient client;
 

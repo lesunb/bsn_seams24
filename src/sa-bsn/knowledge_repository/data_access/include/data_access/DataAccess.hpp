@@ -5,7 +5,7 @@
 #include <chrono>
 #include <deque>
 
-#include "ros/ros.h"
+#include "rclcpp/rclcpp.hpp"
 #include <ros/package.h>
 
 #include "libbsn/goalmodel/Node.hpp"
@@ -71,7 +71,7 @@ class DataAccess : public arch::ROSComponent {
 		void processTargetSystemData(const messages::TargetSystemData::ConstPtr& msg);
 
 	protected:
-		ros::NodeHandle handle;
+		rclcpp::Node handle;
 	
 	private:
 		ros::Subscriber handle_persist;

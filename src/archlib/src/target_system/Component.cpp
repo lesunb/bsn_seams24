@@ -9,7 +9,7 @@ namespace arch {
 		void Component::setUp() {
 			double freq = 1;
 			// handle.getParam("frequency", freq);
-			ROS_INFO("Module initial frequency: %lf", freq);
+			RCLCPP_INFO(rclcpp::get_logger("Archlib"), "Module initial frequency: %lf", freq);
 			rosComponentDescriptor.setFreq(freq);
 
 			collect_event = handle.advertise<archlib::Event>("collect_event", 10);
@@ -27,7 +27,7 @@ namespace arch {
 			signal(SIGINT, sigIntHandler);
 
 			// register in effector
-			ros::NodeHandle client_handler;
+			rclcpp::Node client_handler;
             ros::ServiceClient client_module;
 
 			client_module = client_handler.serviceClient<archlib::EffectorRegister>("EffectorRegister");
@@ -38,9 +38,9 @@ namespace arch {
 			srv.request.connection = true;
 
 			if(client_module.call(srv)) {
-				ROS_INFO("Succesfully connected to effector.");
+				RCLCPP_INFO(rclcpp::get_logger("Archlib"), "Succesfully connected to effector.");
 			} else {
-				ROS_ERROR("Failed to connect to effector.");
+				RCLCPP_ERROR(rclcpp::get_logger("Archlib"), "Failed to connect to effector.");
 			}
 			
 		}
@@ -66,13 +66,13 @@ namespace arch {
 			statusMsg.source = getRosNodeName(ros::this_node::getName(), ros::this_node::getNamespace());
 			statusMsg.content = "status";
 
-			ros::NodeHandle nh;
+			rclcpp::Node nh;
 
-			ros::Publisher last_event = nh.advertise<archlib::Event>("collect_event", 10);
+			auto last_event = nh.advertise<archlib::Event>("collect_event", 10);
 			while(last_event.getNumSubscribers() < 1) {} // to cope with the delay on opening the connection
 			last_event.publish(eventMsg);
 
-			ros::Publisher last_status = nh.advertise<archlib::Status>("collect_status", 10);
+			auto last_status = nh.advertise<archlib::Status>("collect_status", 10);
 			while(last_status.getNumSubscribers() < 1) {}
 			last_status.publish(statusMsg);
 
@@ -81,16 +81,16 @@ namespace arch {
 			srv.request.name = getRosNodeName(ros::this_node::getName(), ros::this_node::getNamespace());
 			srv.request.connection = false;
 
-			ros::NodeHandle client_handler;
+			rclcpp::Node client_handler;
             ros::ServiceClient client_module;
 
 			//Connection to scheduler module management service
 			client_module = client_handler.serviceClient<archlib::EffectorRegister>("EffectorRegister");
 
 			if(client_module.call(srv)) {
-				ROS_INFO("Succesfully disconnected from effector.");
+				RCLCPP_INFO(rclcpp::get_logger("Archlib"), "Succesfully disconnected from effector.");
 			} else {
-				ROS_ERROR("Failed to disconnect from effector.");
+				RCLCPP_ERROR(rclcpp::get_logger("Archlib"), "Failed to disconnect from effector.");
 			}
 		
 			ros::shutdown();
@@ -99,9 +99,9 @@ namespace arch {
 		int32_t Component::run() {
 			setUp();
 
-			while(ros::ok()) {
-				ros::Rate loop_rate(rosComponentDescriptor.getFreq());
-				ros::spinOnce();
+			while(rclcpp::ok()) {
+				rclcpp::Rate loop_rate(rosComponentDescriptor.getFreq());
+				rclcpp::spin_some(node);
 
 				sendStatus("running");
 				try{

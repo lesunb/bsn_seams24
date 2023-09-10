@@ -1,7 +1,7 @@
 #ifndef INJECTOR_HPP
 #define INJECTOR_HPP
 
-#include "ros/ros.h"
+#include "rclcpp/rclcpp.hpp"
 #include <ros/package.h>
 
 #include <time.h>
@@ -35,7 +35,7 @@ class Injector : public arch::ROSComponent {
 		void inject(const std::string &component, const std::string &content);
 
 	private:
-		ros::NodeHandle handle;
+		rclcpp::Node handle;
 		int cycles;
 
 		std::map<std::string, ros::Publisher> uncertainty_pub;

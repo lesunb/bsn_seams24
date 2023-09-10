@@ -134,11 +134,11 @@ void DataAccess::body() {
         count_to_fetch = 0;
     }
 
-    ros::spinOnce();
+    rclcpp::spin_some(node);
 }
 
 void DataAccess::receivePersistMessage(const archlib::Persist::ConstPtr& msg) {
-    ROS_DEBUG("I heard: [%s]", msg->type.c_str());
+    RCLCPP_DEBUG(rclcpp::get_logger("Repository"), "I heard: [%s]", msg->type.c_str());
     ++logical_clock;
 
     if (msg->type == "Status") {
@@ -195,7 +195,7 @@ void DataAccess::receivePersistMessage(const archlib::Persist::ConstPtr& msg) {
     } else if (msg->type=="AdaptationCommand") {
         persistAdaptation(msg->timestamp, msg->source, msg->target, msg->content);
     } else {
-        ROS_INFO("(Could not identify message type!!)");
+        RCLCPP_INFO(rclcpp::get_logger("Repository"), "(Could not identify message type!!)");
     }
 }
 

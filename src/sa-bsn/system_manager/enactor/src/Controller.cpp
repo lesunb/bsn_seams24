@@ -7,7 +7,7 @@ Controller::Controller(int &argc, char **argv, std::string name) : Enactor(argc,
 Controller::~Controller() {}
 
 void Controller::setUp() {
-    ros::NodeHandle nh;
+    rclcpp::Node nh;
 
     adapt = nh.advertise<archlib::AdaptationCommand>("log_adapt", 10);
 
@@ -56,9 +56,9 @@ void Controller::receiveEvent(const archlib::Event::ConstPtr& msg) {
 }
 
 void Controller::apply_reli_strategy(const std::string &component) {
-    ROS_DEBUG("r_ref[%s] = %.2f",component.c_str(),r_ref[component]);
-    ROS_DEBUG("r_curr[%s] = %.2f",component.c_str(), r_curr[component]);
-    ROS_DEBUG("kp[%s] = %.2f",component.c_str(), kp[component]);
+    RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "r_ref[%s] = %.2f",component.c_str(),r_ref[component]);
+    RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "r_curr[%s] = %.2f",component.c_str(), r_curr[component]);
+    RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "kp[%s] = %.2f",component.c_str(), kp[component]);
 
     double error = r_ref[component] - r_curr[component]; //error = Rref - Rcurr
 
@@ -93,12 +93,12 @@ void Controller::apply_reli_strategy(const std::string &component) {
                 msg.target = component;
                 msg.action = "freq=" + std::to_string(freq[component]);
                 adapt.publish(msg);
-                ROS_DEBUG("################################################");
-                ROS_DEBUG("Adapting Centralhub");
-                ROS_DEBUG("Action: %s", msg.action.c_str());
-                ROS_DEBUG("################################################");
+                RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "################################################");
+                RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "Adapting Centralhub");
+                RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "Action: %s", msg.action.c_str());
+                RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "################################################");
             } /*else {
-                ROS_ERROR("COULD NOT ADAPT CENTRALHUB");
+                RCLCPP_ERROR(rclcpp::get_logger("Enactor"), "COULD NOT ADAPT CENTRALHUB");
             }*/
         } else {
             if(adaptation_parameter == "replicate_collect") {
@@ -147,9 +147,9 @@ void Controller::apply_reli_strategy(const std::string &component) {
 }
 
 void Controller::apply_cost_strategy(const std::string &component) {
-    ROS_DEBUG("r_ref[%s] = %.2f",component.c_str(),c_ref[component]);
-    ROS_DEBUG("r_curr[%s] = %.2f",component.c_str(), c_curr[component]);
-    ROS_DEBUG("kp[%s] = %.2f",component.c_str(), kp[component]);
+    RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "r_ref[%s] = %.2f",component.c_str(),c_ref[component]);
+    RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "r_curr[%s] = %.2f",component.c_str(), c_curr[component]);
+    RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "kp[%s] = %.2f",component.c_str(), kp[component]);
 
     double error = c_ref[component] - c_curr[component]; //error = Cref - Ccurr
 
@@ -184,12 +184,12 @@ void Controller::apply_cost_strategy(const std::string &component) {
                 msg.target = component;
                 msg.action = "freq=" + std::to_string(freq[component]);
                 adapt.publish(msg);
-                ROS_DEBUG("################################################");
-                ROS_DEBUG("Adapting Centralhub");
-                ROS_DEBUG("Action: %s", msg.action.c_str());
-                ROS_DEBUG("################################################");
+                RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "################################################");
+                RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "Adapting Centralhub");
+                RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "Action: %s", msg.action.c_str());
+                RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "################################################");
             } /*else {
-                ROS_ERROR("COULD NOT ADAPT CENTRALHUB");
+                RCLCPP_ERROR(rclcpp::get_logger("Enactor"), "COULD NOT ADAPT CENTRALHUB");
             }*/
         } else {
             if(adaptation_parameter == "replicate_collect") {

@@ -4,7 +4,7 @@
 #include <fstream>
 #include <chrono>
 
-#include "ros/ros.h"
+#include "rclcpp/rclcpp.hpp"
 #include <ros/package.h>
 
 #include "archlib/Status.h"
@@ -39,7 +39,7 @@ class Logger : public arch::ROSComponent {
 	  	void receiveUncertainty(const archlib::Uncertainty::ConstPtr& msg);
 
   	protected:
-        ros::NodeHandle handle;
+        rclcpp::Node handle;
 
 	private:
 		int64_t time_ref;

@@ -7,7 +7,7 @@
 #include <map>
 
 #include <ros/package.h>
-#include "ros/ros.h"
+#include "rclcpp/rclcpp.hpp"
 
 #include "libbsn/processor/Processor.hpp"
 #include "libbsn/utils/utils.hpp"

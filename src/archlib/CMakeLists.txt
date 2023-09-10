@@ -1,4 +1,21 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8.3)
+find_package(rosidl_default_generators REQUIRED)
+find_package(ament_cmake REQUIRED)
+set(CMAKE_CXX_STANDARD 1 4)
+rosidl_generate_interfaces(
+    ${PROJECT_NAME}
+        msg/Persist.msg
+        msg/Uncertainty.msg
+        msg/Event.msg
+        msg/EnergyStatus.msg
+        msg/Status.msg
+        msg/AdaptationCommand.msg
+        msg/Exception.msg
+        msg/Strategy.msg
+        srv/DataAccessRequest.srv
+        srv/EffectorRegister.srv
+        srv/EngineRequest.srv
+    DEPENDENCIES
+)CMAKE_MINIMUM_REQUIRED (VERSION 2.8.3)
 PROJECT(archlib)
 
 add_compile_options(-std=c++11 -g)

@@ -1,4 +1,4 @@
-Header header 
+std_msgs/Header header
 float64 trm_batt
 float64 ecg_batt
 float64 oxi_batt
@@ -17,4 +17,4 @@ float64 oxi_data
 float64 abps_data
 float64 abpd_data
 float64 glc_data
-float64 patient_status 
+float64 patient_status

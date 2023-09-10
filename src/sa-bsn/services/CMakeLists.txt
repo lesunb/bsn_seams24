@@ -1,5 +1,13 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(services)
+find_package(rosidl_default_generators REQUIRED)
+find_package(ament_cmake REQUIRED)
+set(CMAKE_CXX_STANDARD 1 4)
+rosidl_generate_interfaces(
+    ${PROJECT_NAME}
+        srv/PatientData.srv
+    DEPENDENCIES
+)
 
 add_compile_options(-std=c++11)
 

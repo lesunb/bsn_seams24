@@ -24,17 +24,17 @@ void Logger::setUp() {
 void Logger::tearDown() {}
 
 void Logger::body() {
-    ros::NodeHandle n;
-    ros::Subscriber reconfig_sub = n.subscribe("log_adapt", 1000, &Logger::receiveAdaptationCommand, this);
-    ros::Subscriber status_sub = n.subscribe("log_status", 1000, &Logger::receiveStatus, this);
-    ros::Subscriber energy_status_sub = n.subscribe("log_energy_status", 1000, &Logger::receiveEnergyStatus, this);
-    ros::Subscriber event_sub = n.subscribe("log_event", 1000, &Logger::receiveEvent, this);
-    ros::Subscriber uncertainty_sub = n.subscribe("log_uncertainty", 1000, &Logger::receiveUncertainty, this);
-    ros::spin();
+    rclcpp::Node n;
+    auto reconfig_sub = n.subscribe("log_adapt", 1000, &Logger::receiveAdaptationCommand, this);
+    auto status_sub = n.subscribe("log_status", 1000, &Logger::receiveStatus, this);
+    auto energy_status_sub = n.subscribe("log_energy_status", 1000, &Logger::receiveEnergyStatus, this);
+    auto event_sub = n.subscribe("log_event", 1000, &Logger::receiveEvent, this);
+    auto uncertainty_sub = n.subscribe("log_uncertainty", 1000, &Logger::receiveUncertainty, this);
+    rclcpp::spin(node);
 }
 
 void Logger::receiveAdaptationCommand(const archlib::AdaptationCommand::ConstPtr& msg) {
-    //ROS_DEBUG("I heard: [%s: %s]", msg->action.c_str(), msg->target.c_str());
+    //RCLCPP_DEBUG(rclcpp::get_logger("LoggingInfrastructure"), "I heard: [%s: %s]", msg->action.c_str(), msg->target.c_str());
 
     archlib::Persist persistMsg;
     persistMsg.source = msg->source;
@@ -49,7 +49,7 @@ void Logger::receiveAdaptationCommand(const archlib::AdaptationCommand::ConstPtr
 
 
 void Logger::receiveStatus(const archlib::Status::ConstPtr& msg) {
-    //ROS_DEBUG("I heard: [%s: %s]", msg->source.c_str(), msg->content.c_str());
+    //RCLCPP_DEBUG(rclcpp::get_logger("LoggingInfrastructure"), "I heard: [%s: %s]", msg->source.c_str(), msg->content.c_str());
 
     archlib::Persist persistMsg;
     persistMsg.source = msg->source;
@@ -63,7 +63,7 @@ void Logger::receiveStatus(const archlib::Status::ConstPtr& msg) {
 }
 
 void Logger::receiveEnergyStatus(const archlib::EnergyStatus::ConstPtr& msg) {
-    //ROS_DEBUG("I heard: [%s: %s]", msg->source.c_str(), to_string(msg->content).c_str());
+    //RCLCPP_DEBUG(rclcpp::get_logger("LoggingInfrastructure"), "I heard: [%s: %s]", msg->source.c_str(), to_string(msg->content).c_str());
 
     archlib::Persist persistMsg;
     persistMsg.source = msg->source;
@@ -76,7 +76,7 @@ void Logger::receiveEnergyStatus(const archlib::EnergyStatus::ConstPtr& msg) {
 }
 
 void Logger::receiveEvent(const archlib::Event::ConstPtr& msg) {
-    //ROS_DEBUG("I heard: [%s: %s]", msg->source.c_str(), msg->content.c_str());
+    //RCLCPP_DEBUG(rclcpp::get_logger("LoggingInfrastructure"), "I heard: [%s: %s]", msg->source.c_str(), msg->content.c_str());
 
     archlib::Persist persistMsg;
     persistMsg.source = msg->source;
@@ -90,7 +90,7 @@ void Logger::receiveEvent(const archlib::Event::ConstPtr& msg) {
 }
 
 void Logger::receiveUncertainty(const archlib::Uncertainty::ConstPtr& msg) {
-    //ROS_DEBUG("I heard: [%s: %s]", msg->source.c_str(), msg->content.c_str());
+    //RCLCPP_DEBUG(rclcpp::get_logger("LoggingInfrastructure"), "I heard: [%s: %s]", msg->source.c_str(), msg->content.c_str());
 
     archlib::Persist persistMsg;
     persistMsg.source = msg->source;

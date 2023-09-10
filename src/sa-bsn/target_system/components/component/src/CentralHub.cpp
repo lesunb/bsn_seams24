@@ -9,17 +9,17 @@ CentralHub::~CentralHub() {}
 int32_t CentralHub::run() {
 	setUp();
 
-    ros::NodeHandle nh;
-    ros::Subscriber thermometerSub = nh.subscribe("thermometer_data", 10, &CentralHub::collect, this);
-    ros::Subscriber oximeterSub = nh.subscribe("oximeter_data", 10, &CentralHub::collect, this);
-    ros::Subscriber ecgSub = nh.subscribe("ecg_data", 10, &CentralHub::collect, this);
-    ros::Subscriber abpsSub = nh.subscribe("abps_data", 10, &CentralHub::collect, this);
-    ros::Subscriber abpdSub = nh.subscribe("abpd_data", 10, &CentralHub::collect, this);
-    ros::Subscriber glucosemeterSub = nh.subscribe("glucosemeter_data", 10, &CentralHub::collect, this);
-    ros::Subscriber reconfigSub = nh.subscribe("reconfigure_"+ros::this_node::getName(), 10, &CentralHub::reconfigure, this);
+    rclcpp::Node nh;
+    auto thermometerSub = nh.subscribe("thermometer_data", 10, &CentralHub::collect, this);
+    auto oximeterSub = nh.subscribe("oximeter_data", 10, &CentralHub::collect, this);
+    auto ecgSub = nh.subscribe("ecg_data", 10, &CentralHub::collect, this);
+    auto abpsSub = nh.subscribe("abps_data", 10, &CentralHub::collect, this);
+    auto abpdSub = nh.subscribe("abpd_data", 10, &CentralHub::collect, this);
+    auto glucosemeterSub = nh.subscribe("glucosemeter_data", 10, &CentralHub::collect, this);
+    auto reconfigSub = nh.subscribe("reconfigure_"+ros::this_node::getName(), 10, &CentralHub::reconfigure, this);
 
-    while(ros::ok()) {
-        ros::Rate loop_rate(rosComponentDescriptor.getFreq());
+    while(rclcpp::ok()) {
+        rclcpp::Rate loop_rate(rosComponentDescriptor.getFreq());
 
         try {
             body();
@@ -33,7 +33,7 @@ int32_t CentralHub::run() {
 }
 
 void CentralHub::body() {
-    ros::spinOnce(); //calls collect() if there's data in the topics
+    rclcpp::spin_some(node); //calls collect() if there's data in the topics
 
     if (!isActive() && battery.getCurrentLevel() > 90){
         turnOn();

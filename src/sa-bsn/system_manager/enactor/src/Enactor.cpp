@@ -7,27 +7,27 @@ Enactor::~Enactor() {}
 void Enactor::tearDown() {}
 
 void Enactor::receiveAdaptationParameter() {
-    ros::NodeHandle client_handler;
+    rclcpp::Node client_handler;
     ros::ServiceClient client_module;
 
     client_module = client_handler.serviceClient<archlib::EngineRequest>("EngineRequest");
     archlib::EngineRequest adapt_srv;
     
     if(!client_module.call(adapt_srv)) {
-        ROS_ERROR("Failed to connect to Strategy Manager node.");
+        RCLCPP_ERROR(rclcpp::get_logger("Enactor"), "Failed to connect to Strategy Manager node.");
         return;
     }
 
     adaptation_parameter = adapt_srv.response.content;
 
     if(adaptation_parameter != "reliability" && adaptation_parameter != "cost") {
-        ROS_ERROR("Invalid adaptation parameter received.");
+        RCLCPP_ERROR(rclcpp::get_logger("Enactor"), "Invalid adaptation parameter received.");
         return;
     }
 }
 
 void Enactor::receiveStatus() {
-    ros::NodeHandle client_handler;
+    rclcpp::Node client_handler;
     ros::ServiceClient client_module;
 
     client_module = client_handler.serviceClient<archlib::DataAccessRequest>("DataAccessRequest");
@@ -40,13 +40,13 @@ void Enactor::receiveStatus() {
     }
 
     if (!client_module.call(r_srv)) {
-        ROS_ERROR("Failed to connect to data access node.");
+        RCLCPP_ERROR(rclcpp::get_logger("Enactor"), "Failed to connect to data access node.");
         return;
     }
     
     std::string ans = r_srv.response.content;
     if (ans == "") {
-        ROS_ERROR("Received empty answer when asked for status.");
+        RCLCPP_ERROR(rclcpp::get_logger("Enactor"), "Received empty answer when asked for status.");
     }
 
     std::vector<std::string> pairs = bsn::utils::split(ans, ';');
@@ -83,16 +83,16 @@ void Enactor::receiveStrategy(const archlib::Strategy::ConstPtr& msg) {
 }
 
 void Enactor::body(){
-    ros::NodeHandle n;
+    rclcpp::Node n;
 
-    ros::Subscriber subs_event = n.subscribe("event", 1000, &Enactor::receiveEvent, this);
-    ros::Subscriber subs_strategy = n.subscribe("strategy", 1000, &Enactor::receiveStrategy, this);
+    auto subs_event = n.subscribe("event", 1000, &Enactor::receiveEvent, this);
+    auto subs_strategy = n.subscribe("strategy", 1000, &Enactor::receiveStrategy, this);
 
-    ros::Rate loop_rate(rosComponentDescriptor.getFreq());
-    while(ros::ok()){
+    rclcpp::Rate loop_rate(rosComponentDescriptor.getFreq());
+    while(rclcpp::ok()){
         if(cycles <= 60*rosComponentDescriptor.getFreq()) ++cycles;
         receiveStatus();
-        ros::spinOnce();
+        rclcpp::spin_some(node);
         loop_rate.sleep();
     }
 }
@@ -100,13 +100,13 @@ void Enactor::body(){
 void Enactor::print() {
     /*
     for(std::vector<std::string>::iterator it = connected.begin(); it != connected.end(); ++it) {
-        ROS_DEBUG("****************************************");
-        ROS_DEBUG("%s - - invocations: [",*it);
-        for(std::deque<int>::iterator itt = invocations[*it].begin(); itt != invocations[*it].end(); ++itt) ROS_DEBUG(*it%st," ";
-        ROS_DEBUG("]");
-        ROS_DEBUG("  - r curr: %s",r_curr[*it]);
-        ROS_DEBUG("  - buffer size: %s",replicate_task[*it]);
-        ROS_DEBUG("****************************************");
+        RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "****************************************");
+        RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "%s - - invocations: [",*it);
+        for(std::deque<int>::iterator itt = invocations[*it].begin(); itt != invocations[*it].end(); ++itt) RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), *it%st," ";
+        RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "]");
+        RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "  - r curr: %s",r_curr[*it]);
+        RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "  - buffer size: %s",replicate_task[*it]);
+        RCLCPP_DEBUG(rclcpp::get_logger("Enactor"), "****************************************");
     }
     */
 }

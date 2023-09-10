@@ -22,26 +22,26 @@ int32_t Sensor::run() {
     }
 
 
-    ros::NodeHandle nh;
-    ros::Subscriber noise_subs = nh.subscribe("uncertainty_"+ros::this_node::getName(), 10, &Sensor::injectUncertainty, this);
-    ros::Subscriber reconfig_subs = nh.subscribe("reconfigure_"+ros::this_node::getName(), 10, &Sensor::reconfigure, this);
+    rclcpp::Node nh;
+    auto noise_subs = nh.subscribe("uncertainty_"+ros::this_node::getName(), 10, &Sensor::injectUncertainty, this);
+    auto reconfig_subs = nh.subscribe("reconfigure_"+ros::this_node::getName(), 10, &Sensor::reconfigure, this);
 
     nh.getParam("connect_sensor", connected_sensor);
-    ROS_INFO("Sensor connected = %d", connected_sensor);
+    RCLCPP_INFO(rclcpp::get_logger("Component"), "Sensor connected = %d", connected_sensor);
     
 
 
     sendStatus("init");
-    ros::spinOnce();
+    rclcpp::spin_some(node);
     
-    while (ros::ok()) {
-        ros::Rate loop_rate(rosComponentDescriptor.getFreq());
-        ros::spinOnce();
+    while (rclcpp::ok()) {
+        rclcpp::Rate loop_rate(rosComponentDescriptor.getFreq());
+        rclcpp::spin_some(node);
 
         try {
             body();
         } catch (const std::exception& e) {
-            ROS_ERROR( "SENSOR FAILED: %s", e.what());
+            RCLCPP_ERROR(rclcpp::get_logger("Component"),  "SENSOR FAILED: %s", e.what());
             sendStatus("fail");
             cost = 0;
         } 

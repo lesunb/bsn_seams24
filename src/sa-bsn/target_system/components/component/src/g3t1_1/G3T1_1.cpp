@@ -91,15 +91,15 @@ double G3T1_1::collect() {
     double m_data = 0;
     std::string res;
     if(connected_sensor) {
-        ros::ServiceClient client = handle.serviceClient<std_srvs::SetBool>("spo2");
-        std_srvs::SetBool srv;
+        ros::ServiceClient client = handle.serviceClient<std_srvs::srv::SetBool>("spo2");
+        std_srvs::srv::SetBool srv;
         srv.request.data = true;
             if (client.call(srv)) {
             res = srv.response.message;
             m_data = std::stof(res);
-            ROS_INFO("new data collected: [%s]", std::to_string(m_data).c_str());
+            RCLCPP_INFO(rclcpp::get_logger("Component"), "new data collected: [%s]", std::to_string(m_data).c_str());
         } else {
-            ROS_INFO("error collecting data");
+            RCLCPP_INFO(rclcpp::get_logger("Component"), "error collecting data");
         }
     } else{
         ros::ServiceClient client = handle.serviceClient<services::PatientData>("getPatientData");
@@ -109,9 +109,9 @@ double G3T1_1::collect() {
 
         if (client.call(srv)) {
             m_data = srv.response.data;
-            ROS_INFO("new data collected: [%s]", std::to_string(m_data).c_str());
+            RCLCPP_INFO(rclcpp::get_logger("Component"), "new data collected: [%s]", std::to_string(m_data).c_str());
         } else {
-            ROS_INFO("error collecting data");
+            RCLCPP_INFO(rclcpp::get_logger("Component"), "error collecting data");
         }
     }
 
@@ -133,7 +133,7 @@ double G3T1_1::process(const double &m_data) {
     battery.consume(BATT_UNIT*filter.getRange());
     cost += BATT_UNIT*filter.getRange();
 
-    ROS_INFO("filtered data: [%s]", std::to_string(filtered_data).c_str());
+    RCLCPP_INFO(rclcpp::get_logger("Component"), "filtered data: [%s]", std::to_string(filtered_data).c_str());
     return filtered_data;
 }
 
@@ -144,7 +144,7 @@ void G3T1_1::transfer(const double &m_data) {
     if (risk < 0 || risk > 100) throw std::domain_error("risk data out of boundaries");
     if (label(risk) != label(collected_risk)) throw std::domain_error("sensor accuracy fail");
 
-    ros::NodeHandle handle;
+    rclcpp::Node handle;
     data_pub = handle.advertise<messages::SensorData>("oximeter_data", 10);
     messages::SensorData msg;
     msg.type = type;
@@ -156,7 +156,7 @@ void G3T1_1::transfer(const double &m_data) {
     battery.consume(BATT_UNIT);
     cost += BATT_UNIT;
 
-    ROS_INFO("risk calculated and transferred: [%.2f%%]", risk);
+    RCLCPP_INFO(rclcpp::get_logger("Component"), "risk calculated and transferred: [%.2f%%]", risk);
 }
 
 std::string G3T1_1::label(double &risk) {

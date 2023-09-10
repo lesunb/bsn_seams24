@@ -1,4 +1,4 @@
-#include <ros/ros.h>
+#include "rclcpp/rclcpp.hpp"
 #include "libbsn/generator/DataGenerator.hpp"
 #include "libbsn/utils/utils.hpp"
 #include "libbsn/range/Range.hpp"
@@ -28,6 +28,6 @@ class PatientModule : public arch::ROSComponent {
 
         double frequency;
         double period;
-        ros::NodeHandle nh;
+        rclcpp::Node nh;
         ros::ServiceServer service;
 };

@@ -4,7 +4,7 @@
 #include <string>
 #include <signal.h>
 
-#include "ros/ros.h"
+#include "rclcpp/rclcpp.hpp"
 
 #include "archlib/Event.h"
 #include "archlib/Status.h"
@@ -44,7 +44,7 @@ namespace arch {
                 void deactivate();
                 static void shutdownComponent();
 
-                ros::NodeHandle handle;
+                rclcpp::Node handle;
                 static void sigIntHandler(int signal);
 
             private:

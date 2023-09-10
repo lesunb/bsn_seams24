@@ -1,7 +1,7 @@
 #ifndef EFFECTOR_HPP
 #define EFFECTOR_HPP
 
-#include "ros/ros.h"
+#include "rclcpp/rclcpp.hpp"
 
 #include "archlib/AdaptationCommand.h"
 #include "archlib/ROSComponent.hpp"
@@ -26,7 +26,7 @@ namespace arch {
                 virtual void receiveAdaptationCommand(const archlib::AdaptationCommand::ConstPtr& msg) = 0;
 
             protected:
-                ros::NodeHandle handle;
+                rclcpp::Node handle;
         };
 
     }

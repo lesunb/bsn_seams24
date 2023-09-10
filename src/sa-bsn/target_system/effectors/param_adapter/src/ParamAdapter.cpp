@@ -14,9 +14,9 @@ void ParamAdapter::setUp() {
 void ParamAdapter::tearDown() {}
 
 void ParamAdapter::body() {
-	ros::NodeHandle n;
-	ros::Subscriber reconf = n.subscribe("reconfigure", 1000, &ParamAdapter::receiveAdaptationCommand, this);
-	ros::spin();
+	rclcpp::Node n;
+	auto reconf = n.subscribe("reconfigure", 1000, &ParamAdapter::receiveAdaptationCommand, this);
+	rclcpp::spin(node);
 
 }
 
@@ -24,7 +24,7 @@ void ParamAdapter::receiveAdaptationCommand(const archlib::AdaptationCommand::Co
 	if (target_arr.find(msg->target) != target_arr.end()){
     	target_arr[msg->target].publish(msg);
 	} else {
-		ROS_INFO("ERROR, target not found! [%s]", msg->target.c_str());
+		RCLCPP_INFO(rclcpp::get_logger("Effector"), "ERROR, target not found! [%s]", msg->target.c_str());
 	}
 }
 
@@ -33,10 +33,10 @@ bool ParamAdapter::moduleConnect(archlib::EffectorRegister::Request &req, archli
 	try {
 		if(req.connection == true) {
 
-            ros::Publisher pub = handle.advertise<archlib::AdaptationCommand>("reconfigure_" + req.name, 1);
+            auto pub = handle.advertise<archlib::AdaptationCommand>("reconfigure_" + req.name, 1);
             target_arr[req.name] = pub;
 
-			ROS_INFO("Module Connected. [%s]", req.name.c_str());
+			RCLCPP_INFO(rclcpp::get_logger("Effector"), "Module Connected. [%s]", req.name.c_str());
 
 		} else {
 
@@ -44,7 +44,7 @@ bool ParamAdapter::moduleConnect(archlib::EffectorRegister::Request &req, archli
 			it = target_arr.find(req.name);
 			target_arr.erase(it);
 
-			ROS_INFO("Module Disconnected. [%s]", req.name.c_str());
+			RCLCPP_INFO(rclcpp::get_logger("Effector"), "Module Disconnected. [%s]", req.name.c_str());
 		}
 
 		res.ACK = true;

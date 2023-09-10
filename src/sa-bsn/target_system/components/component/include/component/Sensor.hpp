@@ -12,8 +12,8 @@
 #include "libbsn/resource/Battery.hpp"
 #include "libbsn/utils/utils.hpp"
 
-#include <std_msgs/Float32.h>
-#include <std_srvs/SetBool.h>
+#include <std_msgs/msg/float32.hpp>
+#include <std_srvs/srv/set_bool.hpp>
 
 class Sensor : public arch::target_system::Component {
 

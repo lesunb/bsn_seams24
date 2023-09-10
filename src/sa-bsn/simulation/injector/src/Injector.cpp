@@ -8,7 +8,7 @@ void Injector::setUp() {
     srand(time(NULL));
     log_uncertainty = handle.advertise<archlib::Uncertainty>("log_uncertainty", 10);
 
-    ros::NodeHandle config;
+    rclcpp::Node config;
     
     double freq;
     config.getParam("frequency", freq);
@@ -84,5 +84,5 @@ void Injector::inject(const std::string &component, const std::string &content){
 
     uncertainty_pub[component].publish(msg);
     log_uncertainty.publish(msg);
-    ROS_INFO("Inject [%s] at [%s].", content.c_str(), component.c_str());
+    RCLCPP_INFO(rclcpp::get_logger("Injector"), "Inject [%s] at [%s].", content.c_str(), component.c_str());
 }

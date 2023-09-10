@@ -45,7 +45,7 @@ bsn::generator::DataGenerator PatientModule::configureDataGenerator(const std::s
     std::array<float, 25> transitions;
     std::array<bsn::range::Range,5> ranges;
     std::string s;
-    ros::NodeHandle handle;
+    rclcpp::Node handle;
 
     for(uint32_t i = 0; i < transitions.size(); i++){
         for(uint32_t j = 0; j < 5; j++){
@@ -90,7 +90,7 @@ bool PatientModule::getPatientData(services::PatientData::Request &request,
     
     response.data = patientData[request.vitalSign].getValue();
     
-    ROS_INFO("Answered a request for %s's data.", request.vitalSign.c_str());
+    RCLCPP_INFO(rclcpp::get_logger("Patient"), "Answered a request for %s's data.", request.vitalSign.c_str());
 
     return true;
 }
@@ -101,7 +101,7 @@ void PatientModule::body() {
         if (p.second >= (vitalSignsChanges[p.first] + vitalSignsOffsets[p.first])) {
             patientData[p.first].nextState();
             p.second = vitalSignsOffsets[p.first];
-            ROS_DEBUG("Transitioned %s's state", p.first.c_str());
+            RCLCPP_DEBUG(rclcpp::get_logger("Patient"), "Transitioned %s's state", p.first.c_str());
         } else {
             p.second += period;
         }
